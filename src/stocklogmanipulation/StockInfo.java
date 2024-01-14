@@ -181,7 +181,7 @@ public class StockInfo {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (count > 0) {
-                            timerLabel.setText("로그아웃 되기" + count + "초 전");
+                            timerLabel.setText("로그아웃 되기 " + count + "초 전");
                             count--;
                         } else {
                             ((Timer) e.getSource()).stop();
@@ -192,7 +192,7 @@ public class StockInfo {
 
                 timer.start();
 
-                closeframe.setSize(300, 200);
+                closeframe.setSize(300, 150);
 
                 Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
                 closeframe.setLocation(dim.width / 2 - closeframe.getSize().width / 2, dim.height / 2 - closeframe.getSize().height / 2);

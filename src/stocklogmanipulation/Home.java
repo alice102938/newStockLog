@@ -5,9 +5,12 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Home {
     static String userId; // 사용자 id 저장 변수 추가
+    private JFrame frame;
     public Home(String userId){
         this.userId = userId;
 
@@ -44,7 +47,7 @@ public class Home {
             internalFrame1.setVisible(true);
             desktopPane.add(internalFrame1);
 
-            // innerframe1 생성, 추가
+            // innerframe1_1 생성, 추가
             JInternalFrame internalFrame1_1 = new JInternalFrame("증시 지수", true, true, true, true);
             JPanel internalPanel1_1 = createPanelWithBorder("증시 지수");
             internalFrame1_1.getContentPane().add(internalPanel1_1);
@@ -125,22 +128,32 @@ public class Home {
 
         return panel;
     }
+    private void refreshHome() {
+        JOptionPane optionPane = new JOptionPane("새로고침됩니다", JOptionPane.INFORMATION_MESSAGE);
+        JDialog dialog = optionPane.createDialog("새로고침");
+        dialog.setModal(false); // Set it non-modal to allow the timer to close it
+        dialog.setVisible(true);
+
+        // Schedule a task to dispose of the dialog after 3 seconds
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dialog.dispose();
+
+                // Dispose of the existing frame
+                frame.dispose();
+
+                // Reinitialize the home frame
+                new Home(userId);
+            }
+        }, 3000);
+    }
 
     private JToolBar createToolBar() {
         JToolBar toolBar = new JToolBar("주식 매매 관리 시스템 툴바");
-
-        // 툴바에 버튼 추가
-        JButton button1 = new JButton("새로고침");
+        //툴바에 버튼 추가
         JButton button2 = new JButton("로그아웃");
-
-        // 각 버튼에 액션 추가
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // 버튼1 클릭 시 실행할 동작
-                System.out.println("버튼 1 클릭");
-            }
-        });
 
         JFrame closeframe = new JFrame("로그아웃");
         JLabel timerLabel = new JLabel("");
@@ -159,16 +172,16 @@ public class Home {
                 closeframe.getContentPane().add(panel, BorderLayout.CENTER);
 
 
-                Timer timer = new Timer(1000, new ActionListener() {
+                javax.swing.Timer timer = new javax.swing.Timer(1000, new ActionListener() {
                     int count = 3;
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (count > 0) {
-                            timerLabel.setText("로그아웃 되기" + count + "초 전");
+                            timerLabel.setText("로그아웃 되기 " + count + "초 전");
                             count--;
                         } else {
-                            ((Timer) e.getSource()).stop();
+                            ((javax.swing.Timer) e.getSource()).stop();
                             System.exit(0);
                         }
                     }
@@ -176,15 +189,13 @@ public class Home {
 
                 timer.start();
 
-                closeframe.setSize(300, 200);
+                closeframe.setSize(300, 150);
 
                 Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
                 closeframe.setLocation(dim.width / 2 - closeframe.getSize().width / 2, dim.height / 2 - closeframe.getSize().height / 2);
-
                 // 프레임 내에 panel을 BorderLayout.CENTER에 배치
                 closeframe.getContentPane().setLayout(new BorderLayout());
                 closeframe.getContentPane().add(panel, BorderLayout.CENTER);
-
                 // timerLabel 가운데 정렬 및 글자 크기 설정
                 timerLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 25));
                 timerLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -194,10 +205,27 @@ public class Home {
         });
 
         // 툴바에 버튼 추가
-        toolBar.add(button1);
-        toolBar.addSeparator(); // 구분선 추가
         toolBar.add(button2);
 
         return toolBar;
     }
+    private JDesktopPane createDesktopPane() {
+        JDesktopPane desktopPane = new JDesktopPane();
+
+        // innerframe1, innerframe1_1, innerframe2, innerframe3, innerframe4, innerframe5 생성 및 추가 로직은 그대로 유지
+
+        return desktopPane;
+    }
+
+    private JPanel createBottomPanel() {
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setBackground(Color.GRAY);
+        bottomPanel.setPreferredSize(new Dimension(800, 50));
+
+        // 패널에 기능 추가
+        Panel6Action.executeApiRequestAndDisplayInPanel(bottomPanel);
+
+        return bottomPanel;
+    }
+
 }

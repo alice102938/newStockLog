@@ -424,11 +424,26 @@ public class Panel3Action {
 
                 // 중복이 아닌 경우에만 행 추가
                 if (!isDuplicate && rowIndex >= tableModel.getRowCount()) {
+                    SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                        @Override
+                        protected Void doInBackground() throws Exception {
+                            return null;
+                        }
+                        @Override
+                        protected void done() {
+                            try {
+                                SwingUtilities.invokeLater(() -> {
+                                    JOptionPane.showMessageDialog(null, "추가되었습니다.");
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    worker.execute();
                     try {
                         // 수정된 부분: 검색어 대신 사용자가 선택한 항목의 텍스트 사용
                         String selectedItemText = selectedValue;
-
-                        // Encode the search term
                         String encodedSearchTerm = URLEncoder.encode(selectedItemText, "UTF-8");
 
                         // 마지막 영업일 범위 가져오기
@@ -510,7 +525,7 @@ public class Panel3Action {
                                     // 연결 닫기 등의 마무리 작업
                                     dbConnector1.closeConnection();
                                 }
-                                // stock
+
                             }
                         } else {
                             System.out.println("No stock price data available for the specified parameters.");
